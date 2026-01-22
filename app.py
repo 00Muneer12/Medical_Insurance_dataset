@@ -34,7 +34,16 @@ st.markdown("---")
 # Load data
 @st.cache_data
 def load_data():
-    df = pd.read_csv('marketing_campaign_lifecycle.csv', on_bad_lines='skip', engine='python')
+    try:
+        # Try reading with quoting
+        df = pd.read_csv('marketing_campaign_lifecycle.csv', quotechar='"', quoting=1, engine='python')
+    except:
+        try:
+            # Fallback: read with semicolon or other delimiters
+            df = pd.read_csv('marketing_campaign_lifecycle.csv', on_bad_lines='skip')
+        except:
+            st.error("Could not load CSV file. Please check the file format.")
+            df = pd.DataFrame()
     return df
 
 df = load_data()
@@ -87,7 +96,7 @@ st.markdown(f"**Showing {len(filtered_df)} of {len(df)} phases**")
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Table View", "🎯 By Stage", "🛠️ Tech Stack", "📈 KPIs"])
 
 with tab1:
-    st.dataframe(filtered_df, use_container_width=True, height=600)
+    st.dataframe(filtered_df, width='stretch', height=600)
 
 with tab2:
     # Group by stage
