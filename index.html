@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Campaign Lifecycle Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .controls {
+            padding: 20px 40px;
+            display: flex;
+            gap: 20px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+            position: sticky;
+            top: 0;
+        }
+
+        th {
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 700;
+            color: #2c3e50;
+            border-bottom: 2px solid #ddd;
+            font-size: 0.95em;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.9em;
+            color: #34495e;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .phase-id {
+            font-weight: 700;
+            color: #667eea;
+            min-width: 60px;
+        }
+
+        .stage-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .stage-discovery {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .stage-strategy {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .stage-creative {
+            background: #ffe0b2;
+            color: #e65100;
+        }
+
+        .stage-media-buying {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .stage-execution {
+            background: #ffccbc;
+            color: #d84315;
+        }
+
+        .stage-optimization {
+            background: #b3e5fc;
+            color: #01579b;
+        }
+
+        .stage-governance {
+            background: #f0f4c3;
+            color: #827717;
+        }
+
+        .process-action {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .sop-text {
+            font-size: 0.85em;
+            color: #555;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .raci-text {
+            font-size: 0.85em;
+            color: #555;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-width: 280px;
+        }
+
+        .tech-tag {
+            background: #ecf0f1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            color: #2c3e50;
+        }
+
+        .kpi-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .footer {
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            th,
+            td {
+                padding: 10px 6px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Marketing Campaign Lifecycle</h1>
+            <p>Enterprise-Grade Marketing Operations Blueprint | 26-Phase Framework</p>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-value">26</div>
+                <div class="stat-label">Total Phases</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">7</div>
+                <div class="stat-label">Lifecycle Stages</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">50+</div>
+                <div class="stat-label">Enterprise Tools</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">15+</div>
+                <div class="stat-label">Years of Excellence</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search phases, actions, or KPIs...">
+            </div>
+            <div class="filter-group">
+                <button class="filter-btn active" onclick="filterByStage('all')">All Stages</button>
+                <button class="filter-btn" onclick="filterByStage('Discovery')">Discovery</button>
+                <button class="filter-btn" onclick="filterByStage('Strategy')">Strategy</button>
+                <button class="filter-btn" onclick="filterByStage('Creative')">Creative</button>
+                <button class="filter-btn" onclick="filterByStage('Media Buying')">Media Buying</button>
+                <button class="filter-btn" onclick="filterByStage('Execution')">Execution</button>
+                <button class="filter-btn" onclick="filterByStage('Optimization')">Optimization</button>
+                <button class="filter-btn" onclick="filterByStage('Governance')">Governance</button>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Phase ID</th>
+                        <th>Lifecycle Stage</th>
+                        <th>Process Action</th>
+                        <th>Standard Operating Procedure (SOP)</th>
+                        <th>RACI Matrix Role</th>
+                        <th>Tech Stack</th>
+                        <th>Critical KPI</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 Enterprise Marketing Operations | Data Architecture: Senior Marketing Operations Director & Data
+                Architect</p>
+        </div>
+    </div>
+
+    <script>
+        const data = [
+            { phaseId: 'P1', stage: 'Discovery', action: 'Market Gap Analysis & Competitive Intelligence', sop: 'Conduct systematic competitive landscape assessment using Porter\'s Five Forces framework; deploy social listening tools to identify unmet market needs; synthesize findings into executive briefing with win/loss analysis against primary competitors', raci: 'Accountable: CMO | Responsible: Market Research Manager', techStack: ['Semrush', 'Brandwatch', 'SimilarWeb', 'Crunchbase'], kpi: 'Market Gap Opportunity Score (0-100)' },
+            { phaseId: 'P2', stage: 'Discovery', action: 'Customer Persona Development & Segmentation', sop: 'Execute qualitative research (15+ stakeholder interviews); deploy quantitative surveys (n=500+); leverage CRM data to build psychographic/behavioral segments; document personas with 40+ data points each', raci: 'Accountable: VP of Marketing | Responsible: Customer Insights Lead', techStack: ['Qualtrics', 'HubSpot', 'Mixpanel', 'SurveyMonkey'], kpi: 'Persona Confidence Index (Statistical Significance at p<0.05)' },
+            { phaseId: 'P3', stage: 'Discovery', action: 'Revenue Impact Modeling & Campaign ROI Projection', sop: 'Build Monte Carlo simulation models (5,000+ iterations) to forecast campaign performance across channels; establish baseline metrics and control group benchmarks; calculate payback period and NPV', raci: 'Accountable: Chief Revenue Officer | Responsible: Data Scientist', techStack: ['Tableau', 'Python (Scipy/NumPy)', 'BigQuery', 'Alteryx'], kpi: 'ROI Projection Range (Confidence Interval at 95%)' },
+            { phaseId: 'P4', stage: 'Strategy', action: 'Brand Messaging Framework & Value Proposition Architecture', sop: 'Develop positioning matrix across 8+ message pillars; conduct messaging testing with 200+ respondents using MaxDiff analysis; create messaging guidelines document (50+ pages) with tone and deployment rules', raci: 'Accountable: Chief Marketing Officer | Responsible: Brand Strategy Director', techStack: ['Brand24', 'Typeform', 'Figma', 'Confluence'], kpi: 'Message Resonance Score (0-10 Average)' },
+            { phaseId: 'P5', stage: 'Strategy', action: 'Media Mix Modeling & Channel Allocation', sop: 'Execute econometric modeling using 24+ months historical data; deploy attribution modeling (multi-touch) to calibrate incremental lift per channel; optimize budget allocation using linear programming', raci: 'Accountable: VP of Demand Generation | Responsible: Marketing Analytics Manager', techStack: ['Nielsen MMM', 'Google Analytics 4', 'Neustar Marketing Suite', 'Excel (Solver)'], kpi: 'Predicted ROI by Channel ($ per $1 Spent)' },
+            { phaseId: 'P6', stage: 'Strategy', action: 'Campaign Architecture & Timeline Roadmap', sop: 'Design phased campaign launch strategy (pre-launch → launch → sustain → scale); build 18-month Gantt chart with 200+ dependencies; establish stakeholder governance cadence (weekly steering committee)', raci: 'Accountable: Senior Campaign Manager | Responsible: Program Manager', techStack: ['Asana', 'Monday.com', 'Microsoft Project', 'Miro'], kpi: 'Schedule Adherence Index (% On-Time Delivery)' },
+            { phaseId: 'P7', stage: 'Creative', action: 'Campaign Creative Brief Development', sop: 'Generate comprehensive creative brief (30+ pages) aligned to messaging framework; include success criteria, legal/compliance guardrails, and brand safety guidelines; obtain sign-off from Legal and Brand teams', raci: 'Accountable: Creative Director | Responsible: Copywriter', techStack: ['Google Docs', 'Brand Central', 'Figma', 'ShareFile'], kpi: 'Creative Brief Approval Rate (% First-Pass Approval)' },
+            { phaseId: 'P8', stage: 'Creative', action: 'Multi-Format Creative Production (Digital/Video/Print)', sop: 'Produce 15+ creative executions across formats; deploy A/B testing framework (minimum 3 variants per channel); conduct quality assurance (QA) audit against brand guidelines and legal compliance', raci: 'Accountable: VP Creative Services | Responsible: Art Director', techStack: ['Adobe Creative Suite', 'Frame.io', 'InVision', 'Wistia'], kpi: 'Creative Production Velocity (Assets Produced per Week)' },
+            { phaseId: 'P9', stage: 'Creative', action: 'Landing Page Development & Conversion Optimization', sop: 'Build responsive landing pages with modular component architecture; implement VWO optimization framework with 50+ elements tested; achieve target conversion rate benchmarks (2-5% baseline)', raci: 'Accountable: VP of Conversion | Responsible: UX Designer', techStack: ['Unbounce', 'Instapage', 'Optimizely', 'Figma'], kpi: 'Landing Page Conversion Rate (%)' },
+            { phaseId: 'P10', stage: 'Creative', action: 'Compliance Review & Legal Clearance Protocol', sop: 'Execute full legal review (claims substantiation, IP clearance, regulatory compliance); obtain CPO sign-off; document audit trail for compliance records; prepare contingency creative if needed', raci: 'Accountable: General Counsel | Responsible: Compliance Officer', techStack: ['DocuSign', 'Sharepoint', 'eSignal', 'Everbridge'], kpi: 'Compliance Clearance Cycle Time (Days to Approval)' },
+            { phaseId: 'P11', stage: 'Media Buying', action: 'Media Negotiations & Rate Card Acquisition', sop: 'Execute sealed-bid RFP process with 8+ media partners; benchmark rates against industry standards (eMarketer benchmarks); negotiate 15% below standard CPM; secure preferential placement guarantees', raci: 'Accountable: VP Media | Responsible: Media Buyer', techStack: ['MediaOcean', 'Simpli', 'Salesforce', 'Sourcing Ninja'], kpi: 'Cost Per Thousand (CPM) Reduction (% Savings vs. Standard Rate)' },
+            { phaseId: 'P12', stage: 'Media Buying', action: 'Media Plan Build & Audience Targeting Framework', sop: 'Develop media plan (50+ pages) with reach/frequency analysis; build audience segments (minimum 10 micro-segments); implement advanced targeting (contextual + behavioral + lookalike + custom audiences); model attribution waterfall', raci: 'Accountable: Director of Media Strategy | Responsible: Media Planner', techStack: ['Rocket Fuel', 'Marin Software', 'Adobe Advertising Cloud', 'BigQuery'], kpi: 'Planned Reach (% of Target Audience)' },
+            { phaseId: 'P13', stage: 'Media Buying', action: 'Ad Server Setup & Campaign Configuration', sop: 'Configure campaign taxonomy (400+ line items); set up pixels, tags, and UTM parameters (Google Tag Manager); implement cross-device tracking; establish real-time bidding (RTB) guardrails; QA all tracking infrastructure', raci: 'Accountable: Senior Media Operations Manager | Responsible: Ad Operations Specialist', techStack: ['Google Campaign Manager', 'DoubleClick', 'Marin', 'Skai'], kpi: 'Campaign Configuration Accuracy (% of Tags Firing Correctly)' },
+            { phaseId: 'P14', stage: 'Execution', action: 'Pre-Launch Readiness & Stakeholder Activation', sop: 'Execute end-to-end go/no-go checklist (150+ items); conduct stakeholder communication blitz; deploy sales enablement materials to 500+ field teams; brief customer service on campaign narratives', raci: 'Accountable: Senior Campaign Manager | Responsible: Communications Manager', techStack: ['Salesforce', 'Slack', 'HubSpot', 'Pendo'], kpi: 'Launch Readiness Score (0-100 Composite)' },
+            { phaseId: 'P15', stage: 'Execution', action: 'Campaign Launch & Channel Activation', sop: 'Simultaneously activate across 6+ channels (paid search, social, display, video, email, partnerships); execute press releases and media briefings; activate influencer partnerships (50+ creators); monitor for technical issues in real-time', raci: 'Accountable: Chief Marketing Officer | Responsible: Demand Generation Lead', techStack: ['Salesforce DMP', 'LiveRamp', 'Skai', 'Marin Software'], kpi: 'Campaign Reach (Impressions in First 48 Hours)' },
+            { phaseId: 'P16', stage: 'Execution', action: 'Lead Generation & Qualification Pipeline', sop: 'Execute lead nurturing sequences (12+ email touchpoints); implement progressive profiling; qualify leads through BANT framework; transfer MQL→SQL with 40%+ conversion rate target', raci: 'Accountable: VP of Sales Development | Responsible: SDR Manager', techStack: ['Marketo', 'HubSpot', 'Salesforce', 'Outreach'], kpi: 'Marketing Qualified Lead (MQL) Volume & Conversion to SQL (%)' },
+            { phaseId: 'P17', stage: 'Execution', action: 'Sales Enablement & Deal Acceleration', sop: 'Equip sales team with battle cards (50+ competitor comparisons); deploy playbooks for 8+ buyer personas; implement sales content management system; track sales engagement metrics (call activity, demos scheduled)', raci: 'Accountable: VP Sales | Responsible: Sales Enablement Manager', techStack: ['Salesforce', 'Seismic', 'Highspot', 'Gong'], kpi: 'Sales Pipeline Velocity (Days to Opportunity → Close)' },
+            { phaseId: 'P18', stage: 'Execution', action: 'Real-Time Monitoring & Incident Management', sop: 'Deploy 24/7 monitoring dashboard with 200+ KPIs; establish incident response protocols with <1 hour SLA; implement automated alerting (Slack/PagerDuty notifications); conduct daily standup reviews', raci: 'Accountable: Director of Campaign Operations | Responsible: Analyst', techStack: ['Datadog', 'New Relic', 'Looker', 'Tableau'], kpi: 'System Uptime (% Availability) & Alert Resolution Time' },
+            { phaseId: 'P19', stage: 'Optimization', action: 'Performance Analysis & Anomaly Detection', sop: 'Conduct daily performance audits against control benchmarks; deploy statistical significance testing (Chi-square tests); identify underperforming channels (>15% miss vs. target); generate automated anomaly reports', raci: 'Accountable: Head of Analytics | Responsible: Data Analyst', techStack: ['Google Analytics 4', 'Mixpanel', 'Amplitude', 'Python (Pandas/SciPy)'], kpi: 'Performance vs. Target Index (Cumulative % of Goal Achieved)' },
+            { phaseId: 'P20', stage: 'Optimization', action: 'Budget Reallocation & Channel Mix Optimization', sop: 'Execute real-time budget optimization using machine learning algorithms; shift 10-20% of spend to top-performing channels; implement dynamic creative optimization (DCO) with 50+ creative variants; update media plan weekly', raci: 'Accountable: VP of Marketing | Responsible: Marketing Analytics Manager', techStack: ['Marin Software', 'Rocket Fuel', 'Adobe Advertising Cloud', 'Optmyzr'], kpi: 'Optimized ROAS by Channel ($ Revenue per $1 Ad Spend)' },
+            { phaseId: 'P21', stage: 'Optimization', action: 'A/B Testing & Multivariate Experiment Framework', sop: 'Execute 15+ concurrent experiments (landing pages, email creative, audience segments, bid strategies); maintain 95% statistical power; analyze interaction effects; implement winning variants within 48 hours', raci: 'Accountable: Director of Experimentation | Responsible: Growth Scientist', techStack: ['Optimizely', 'VWO', 'Google Optimize', 'Statsig'], kpi: 'Win Rate of Experiments (% Statistically Significant at p<0.05)' },
+            { phaseId: 'P22', stage: 'Optimization', action: 'Customer Experience Personalization & Journey Mapping', sop: 'Implement 50+ personalization rules based on behavioral data; dynamically customize homepage/email/ad creative by segment; deploy chatbot AI (NLP-based) for 24/7 support; measure engagement lift vs. control', raci: 'Accountable: VP of CX | Responsible: CX Manager', techStack: ['Segment', 'mParticle', 'Adobe Target', 'Intercom'], kpi: 'Personalization Engagement Lift (% Increase vs. Control)' },
+            { phaseId: 'P23', stage: 'Optimization', action: 'Retention & Loyalty Activation', sop: 'Deploy post-conversion nurture sequences (8+ weeks); implement tiered loyalty program (3+ tiers); execute win-back campaigns for churn risk segments; measure Net Promoter Score (NPS) monthly', raci: 'Accountable: Director of Customer Success | Responsible: Loyalty Program Manager', techStack: ['HubSpot', 'Klaviyo', 'Thinkalike', 'Zendesk'], kpi: 'Customer Lifetime Value (CLV) & Retention Rate (%) by Cohort' },
+            { phaseId: 'P24', stage: 'Governance', action: 'Campaign Performance Deep-Dive Analysis', sop: 'Conduct multi-dimensional analysis across 15+ KPIs; perform cohort analysis by acquisition channel; document learnings in 40+ page performance report; calculate true ROI using closed-loop attribution', raci: 'Accountable: Chief Marketing Officer | Responsible: Analytics Director', techStack: ['Tableau', 'Looker', 'Mode Analytics', 'BigQuery'], kpi: 'Campaign ROI vs. Projection (Variance %)' },
+            { phaseId: 'P25', stage: 'Governance', action: 'Post-Campaign Audit & Compliance Reconciliation', sop: 'Execute full financial reconciliation (cost accountability); verify privacy/GDPR compliance; audit vendor invoices against contracted rates (SLA compliance); complete post-mortem documentation', raci: 'Accountable: General Counsel | Responsible: Compliance Officer', techStack: ['Workiva', 'Anaplan', 'Hyperion', 'SharePoint'], kpi: 'Audit Finding Resolution Rate (% Resolved within 30 Days)' },
+            { phaseId: 'P26', stage: 'Governance', action: 'Revenue Attribution & Scaling Blueprint', sop: 'Model incremental revenue impact (econometric analysis); extrapolate successful tactics into always-on programs; document replicable playbooks (50+ pages); present scaling roadmap to Board/C-Suite', raci: 'Accountable: Chief Revenue Officer | Responsible: Senior Strategist', techStack: ['Marketo', 'Salesforce Einstein', 'Python', 'Jupyter Notebooks'], kpi: 'Incremental Revenue Attributed ($ and % Lift vs. Baseline)' }
+        ];
+
+        let filteredData = data;
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            filteredData.forEach(item => {
+                const row = document.createElement('tr');
+                const stageClass = `stage-${item.stage.toLowerCase().replace(' ', '-')}`;
+                const techStackHTML = item.techStack.map(tech => `<span class="tech-tag">${tech}</span>`).join('');
+
+                row.innerHTML = `
+                    <td><span class="phase-id">${item.phaseId}</span></td>
+                    <td><span class="stage-badge ${stageClass}">${item.stage}</span></td>
+                    <td><span class="process-action">${item.action}</span></td>
+                    <td><span class="sop-text" title="${item.sop}">${item.sop}</span></td>
+                    <td><span class="raci-text">${item.raci}</span></td>
+                    <td><div class="tech-stack">${techStackHTML}</div></td>
+                    <td><span class="kpi-badge">${item.kpi}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterByStage(stage) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (stage === 'all') {
+                filteredData = data;
+            } else {
+                filteredData = data.filter(item => item.stage === stage);
+            }
+
+            renderTable();
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            filteredData = data.filter(item =>
+                item.phaseId.toLowerCase().includes(searchTerm) ||
+                item.action.toLowerCase().includes(searchTerm) ||
+                item.kpi.toLowerCase().includes(searchTerm) ||
+                item.stage.toLowerCase().includes(searchTerm)
+            );
+            renderTable();
+        });
+
+        renderTable();
+    </script>
+</body>
+
+</html>
